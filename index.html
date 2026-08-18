@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tarnished's Path — An Elden Ring Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=EB+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+
+  /* ---------- design tokens ---------- */
+  :root {
+    --bg: #0e0c09;
+    --surface: #1b1712;
+    --surface-hover: #241f18;
+    --border: #4a3d26;
+    --gold: #c9a961;
+    --gold-bright: #e8c97e;
+    --text: #e9e2d0;
+    --text-muted: #9a9284;
+
+    --balanced-color: #7a9459;  
+    --op-color: #4d7ba8;        
+    --challenge-color: #a3423f; 
+    --rune1-color: #b8783f;     
+    --deathless-color: #6b1f1f;
+    
+    --str-color: #a8603c;
+    --dex-color: #4a9a8a;
+    --int-color: #5a6bb8;
+    --faith-color: #b89550;
+    --arc-color: #7a4a8a;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    background-image: radial-gradient(ellipse at top, #1a1510 0%, #0e0c09 60%);
+    color: var(--text);
+    font-family: 'EB Garamond', serif;
+    font-size: 18px;
+    line-height: 1.6;
+    padding: 3rem 1.5rem 6rem;
+    min-height: 100vh;
+  }
+
+  .wrap { max-width: 1020px; margin: 0 auto; }
+
+  /* ---------- header ---------- */
+  header { text-align: center; margin-bottom: 3rem; }
+  header h1 { font-size: 2.1rem; margin: 0 0 0.5rem; }
+  header p { color: var(--text-muted); margin: 0; font-size: 1.05rem; }
+
+  /* ----- tab ----- */
+  .tab-nav { display: flex; justify-content: center; gap: 0.75rem; margin-bottom: 2.5rem; }
+  .tab-btn {
+  font-family: 'Cinzel', serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  padding: 0.6rem 1.5rem;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  }
+  .tab-btn:hover { background: var(--surface-hover); color: var(--text); }
+  .tab-btn.active {
+    position: relative;
+    color: var(--gold-bright);
+    border-color: var(--gold);
+    background: var(--surface);
+    box-shadow:
+      0 0 14px rgba(232, 201, 126, 0.8),
+      0 0 38px rgba(201, 169, 97, 0.55),
+      0 0 70px rgba(201, 169, 97, 0.25),
+      inset 0 0 18px rgba(201, 169, 97, 0.25);
+    animation: grace-glow 2.2s ease-in-out infinite;
+  }
+
+  @keyframes grace-glow {
+    0%, 100% {
+      filter: brightness(1);
+    }
+
+    50% {
+      filter: brightness(1.25);
+      box-shadow:
+        0 0 20px rgba(232, 201, 126, 1),
+        0 0 50px rgba(201, 169, 97, 0.75),
+        0 0 90px rgba(201, 169, 97, 0.4),
+        inset 0 0 24px rgba(201, 169, 97, 0.35);
+    }
+  }
+
+  .tab-btn.active {
+    position: relative;
+    color: var(--gold-bright);
+    border-color: var(--gold);
+    background: var(--surface);
+    box-shadow:
+      0 0 14px rgba(232, 201, 126, 0.8),
+      0 0 38px rgba(201, 169, 97, 0.55),
+      0 0 70px rgba(201, 169, 97, 0.25),
+      inset 0 0 18px rgba(201, 169, 97, 0.25);
+    animation: grace-glow 2.2s ease-in-out infinite;
+  }
+
+  @keyframes grace-glow {
+    0%, 100% {
+      filter: brightness(1);
+    }
+
+    50% {
+      filter: brightness(1.25);
+      box-shadow:
+        0 0 20px rgba(232, 201, 126, 1),
+        0 0 50px rgba(201, 169, 97, 0.75),
+        0 0 90px rgba(201, 169, 97, 0.4),
+        inset 0 0 24px rgba(201, 169, 97, 0.35);
+    }
+  }
+  .tab-btn.active::after {
+    content: "";
+    position: absolute;
+    inset: -8px;
+    z-index: -1;
+    border-radius: inherit;
+    background: rgba(201, 169, 97, 0.3);
+    filter: blur(14px);
+    animation: aura-pulse 2.2s ease-in-out infinite;
+  }
+
+  @keyframes aura-pulse {
+    0%, 100% { opacity: 0.35; transform: scale(0.95); }
+    50% { opacity: 0.9; transform: scale(1.08); }
+  }
+
+  /* ---------- start screen ---------- */
+  .start-screen {
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem 0 3rem;
+  }
+  .start-seal {
+    width: 74px; height: 74px;
+    border-radius: 50%;
+    border: 2px solid var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 1.6rem;
+    color: var(--gold-bright);
+    background: var(--surface);
+    box-shadow: 0 0 24px rgba(201, 169, 97, 0.25), inset 0 0 12px rgba(201, 169, 97, 0.15);
+    margin-bottom: 2rem;
+  }
+  .start-screen h2 {
+    font-size: 2rem;
+    margin: 0 0 1.25rem;
+    line-height: 1.25;
+  }
+  .start-screen .lore {
+    max-width: 42rem;
+    margin: 0 auto 2.5rem;
+    color: var(--text-muted);
+    font-size: 1.05rem;
+    font-style: italic;
+  }
+  .start-screen .lore em { color: var(--text); }
+  .start-screen .controls { justify-content: center; }
+
+  /* ---------- path selector ---------- */
+  .path-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+  }
+
+  .path-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.5rem 1.25rem;
+    cursor: pointer;
+    transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+    text-align: center;
+  }
+  .path-card:hover {
+    background: var(--surface-hover);
+    border-color: var(--accent, var(--gold));
+    transform: translateY(-3px);
+  }
+  .path-card .icon {
+    width: 42px; height: 42px;
+    margin: 0 auto 0.9rem;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--accent);
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+  }
+  .path-card h3 { margin: 0 0 0.5rem; font-size: 1.15rem; }
+  .path-card p { margin: 0; color: var(--text-muted); font-size: 0.95rem; }
+
+  /* ---------- progress trail (grace markers) ---------- */
+  .trail {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    margin: 2rem 0 2.5rem;
+  }
+  .trail .marker {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: #33291c;
+    border: 1px solid var(--border);
+    position: relative;
+    flex-shrink: 0;
+  }
+  .trail .marker.done { background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+  .trail .marker.current {
+    background: var(--gold-bright);
+    box-shadow: 0 0 10px var(--gold-bright);
+    transform: scale(1.3);
+  }
+  .trail .line { flex: 1; height: 1px; background: var(--border); max-width: 40px; }
+  .trail .line.done { background: var(--accent); }
+
+  /* ---------- step content ---------- */
+  .path-label {
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+
+  .step-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 4px;
+    padding: 1.75rem 2rem;
+    margin-bottom: 1.5rem;
+  }
+  .step-card h2 { margin: 0 0 0.75rem; font-size: 1.4rem; }
+  .step-card p { margin: 0; color: var(--text); }
+
+  /* ---------- collapsible tip ---------- */
+  .tip {
+    margin-top: 1.25rem;
+    border-top: 1px solid var(--border);
+    padding-top: 0.9rem;
+  }
+  .tip summary {
+    cursor: pointer;
+    font-family: 'Cinzel', serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+  .tip p { margin-top: 0.7rem; color: var(--text-muted); font-size: 0.95rem; }
+
+  /* ---------- checklist ---------- */
+  .checklist { list-style: none; padding: 0; margin: 1rem 0 0; }
+  .checklist li {
+    display: flex; align-items: center; gap: 0.6rem;
+    padding: 0.4rem 0;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+  }
+  .checklist li.checked { color: var(--text); text-decoration: line-through; opacity: 0.6; }
+  .checklist input { accent-color: var(--gold); width: 16px; height: 16px; }
+
+  /* ---------- controls ---------- */
+  .controls {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  button {
+    font-family: 'Cinzel', serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: transparent;
+    color: var(--gold-bright);
+    border: 1px solid var(--gold);
+    padding: 0.7rem 1.4rem;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  button:hover { background: var(--gold); color: #14110c; }
+  button.ghost { border-color: var(--border); color: var(--text-muted); }
+  button.ghost:hover { background: var(--surface-hover); color: var(--text); }
+
+  .reset-row { text-align: center; margin-top: 3rem; }
+  .reset-row button { font-size: 0.75rem; padding: 0.5rem 1rem; }
+
+  .end-message { text-align: center; padding: 2rem 0; }
+  .end-message h2 { font-size: 1.6rem; }
+
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header id="site-header">
+    <h1>Tarnished's Path</h1>
+    <p>Choose your road through the Lands Between.</p>
+  </header>
+
+  <nav class="tab-nav" id="tab-nav">
+  <button class="tab-btn" data-tab="progression">Progression</button>
+  <button class="tab-btn" data-tab="builds">Builds</button>
+  </nav>
+
+  <div id="app"></div>
+
+  <div class="reset-row" id="reset-row">
+     <button class="ghost" id="reset-btn">Forget this journey</button>
+  </div>
+
+</div>
+
+<script>
+
+  /* =========================================================
+     DATA — this is the only section you should need to touch.
+
+     This object is the entire "story tree" for the site. Every
+     screen (path cards, sub-path cards, step content, progress
+     trail) is generated FROM this data — nothing about a path is
+     hardcoded in the HTML or render functions below. Add a path,
+     add a step, or add a sub-path here and the UI builds itself.
+
+     ---------------------------------------------------------
+     TOP-LEVEL PATH shape (no branching):
+       key: {
+         name:      "Display name shown on the card and header",
+         color:     "var(--some-color)",   // define the var in :root above
+         icon:      "Short 1-3 char label for the card icon circle",
+         tagline:   "One line shown on the selector card",
+         steps:     [ STEP, STEP, ... ]     // see STEP shape below
+       }
+
+     BRANCHING PATH shape (has its own sub-paths, like Challenge
+     Run below): same as above, but replace `steps` with:
+         subPaths: {
+           key: {
+             name:  "Sub-path display name",
+             color: "var(--some-color)",
+             icon:  "Short label",
+             tagline: "One line shown on the sub-path card",
+             steps: [ STEP, STEP, ... ]
+           },
+           ...
+         }
+       A branching path itself never has both `steps` and
+       `subPaths` — pick one per entry.
+
+     STEP shape:
+       {
+         title:      "Step heading",
+         body:       "Main instructions for this step.",
+         tip:        "Optional extra detail shown in a collapsible
+                       'tip' section. Set to null to omit it entirely.",
+         checklist:  ["Optional items to check off"]  // [] to omit
+       }
+     ========================================================= */
+  const PATHS = {
+
+    balanced: {
+      name: "Balanced",
+      color: "var(--balanced-color)",
+      icon: "B",
+      tagline: "The reccomended path of a fresh Tarnished, offering a scenic route of the best the Lands Between has to offer.",
+      steps: [
+        {
+          title: "TODO: step 1 title",
+          body: "TODO: describe what the player should do in this step.",
+          tip: "TODO: optional tip, or set this field to null to hide the tip block.",
+          checklist: ["TODO: optional checklist item", "TODO: another item"]
+        },
+        {
+          title: "TODO: step 2 title",
+          body: "TODO: describe what the player should do in this step.",
+          tip: null,
+          checklist: []
+        },
+        {
+          title: "TODO: step 3 title",
+          body: "TODO: describe what the player should do in this step.",
+          tip: null,
+          checklist: []
+        }
+      ]
+    },
+
+    overpowered: {
+      name: "Overpowered",
+      color: "var(--op-color)",
+      icon: "OP",
+      tagline: "The path of a Tarnished who wishes to dominate the every obstacle met with overwhelming strength as efficiently as possible.",
+      steps: [
+        {
+          title: "TODO: step 1 title",
+          body: "TODO: describe what the player should do in this step.",
+          tip: "TODO: optional tip, or set this field to null to hide the tip block.",
+          checklist: ["TODO: optional checklist item", "TODO: another item"]
+        },
+        {
+          title: "TODO: step 2 title",
+          body: "TODO: describe what the player should do in this step.",
+          tip: null,
+          checklist: []
+        },
+        {
+          title: "TODO: step 3 title",
+          body: "TODO: describe what the player should do in this step.",
+          tip: null,
+          checklist: []
+        }
+      ]
+    },
+
+    challenge: {
+      name: "Challenge Run",
+      color: "var(--challenge-color)",
+      icon: "!",
+      tagline: "Multiple paths of varying difficulty and restrictions, for Tarnished who want to test their mettle.",
+      // No `steps` here — this path branches into two sub-paths below,
+      // so picking this card shows a second selection screen instead
+      // of jumping straight into content.
+      subPaths: {
+
+        runeLevel1: {
+          name: "Rune Level 1",
+          color: "var(--rune1-color)",
+          icon: "RL1",
+          tagline: "By restricting the player's ability to level up, this path forces a more careful and deliberate approach to the Lands Between.",
+          steps: [
+            {
+              title: "TODO: step 1 title",
+              body: "TODO: describe what the player should do in this step.",
+              tip: "TODO: optional tip, or set this field to null to hide the tip block.",
+              checklist: ["TODO: optional checklist item"]
+            },
+            {
+              title: "TODO: step 2 title",
+              body: "TODO: describe what the player should do in this step.",
+              tip: null,
+              checklist: []
+            },
+            {
+              title: "TODO: step 3 title",
+              body: "TODO: describe what the player should do in this step.",
+              tip: null,
+              checklist: []
+            }
+          ]
+        },
+
+        deathless: {
+          name: "Deathless",
+          color: "var(--deathless-color)",
+          icon: "DL",
+          tagline: "One mistake, and it's back to the title screen. This path is aids the Tarnished in mastering survivability.",
+          steps: [
+            {
+              title: "TODO: step 1 title",
+              body: "TODO: describe what the player should do in this step.",
+              tip: "TODO: optional tip, or set this field to null to hide the tip block.",
+              checklist: ["TODO: optional checklist item"]
+            },
+            {
+              title: "TODO: step 2 title",
+              body: "TODO: describe what the player should do in this step.",
+              tip: null,
+              checklist: []
+            },
+            {
+              title: "TODO: step 3 title",
+              body: "TODO: describe what the player should do in this step.",
+              tip: null,
+              checklist: []
+            }
+          ]
+        }
+      }
+    }
+  };
+
+  const BUILDS = {
+  
+    strength: {
+    name: "Strength", color: "var(--str-color)", icon: "STR",
+    tagline: "Builds that commonly focus on massive weapons, often at the cost of speed or versatility.",
+    weapons: {
+      weaponOne: {
+        name: "TODO: weapon name", icon: "TODO",
+        tagline: "TODO: one-line summary for this weapon's card.",
+          build: {
+            overview: "TODO: describe the build's playstyle.",
+            statSpread: ["TODO: Stat - value"],
+            talismans: ["TODO: talisman name"],
+            notes: null
+          }
+        }
+      }
+    },
+    dexterity: {
+      name: "Dexterity", color: "var(--dex-color)", icon: "DEX",
+      tagline: "Builds that prioritize speed and precision, often utilizing lighter weapons.",
+      weapons: {
+        weaponOne: {
+          name: "TODO: weapon name", icon: "TODO",
+          tagline: "TODO: one-line summary for this weapon's card.",
+          build: { overview: "TODO", statSpread: ["TODO: Stat - value"], talismans: ["TODO: talisman name"], notes: null }
+        }
+      }
+    },
+    intelligence: {
+      name: "Intelligence", color: "var(--int-color)", icon: "INT",
+      tagline: "Builds that focus on magical power and scholarly knowledge.",
+      weapons: {
+        weaponOne: {
+          name: "TODO: weapon name", icon: "TODO",
+          tagline: "TODO: one-line summary for this weapon's card.",
+          build: { overview: "TODO", statSpread: ["TODO: Stat - value"], talismans: ["TODO: talisman name"], notes: null }
+        }
+      }
+    },
+    faith: {
+      name: "Faith", color: "var(--faith-color)", icon: "FTH",
+      tagline: "Builds that focus on divine magic and enhancing the self.",
+      weapons: {
+        weaponOne: {
+          name: "TODO: weapon name", icon: "TODO",
+          tagline: "TODO: one-line summary for this weapon's card.",
+          build: { overview: "TODO", statSpread: ["TODO: Stat - value"], talismans: ["TODO: talisman name"], notes: null }
+        }
+      }
+    },
+    arcane: {
+      name: "Arcane", color: "var(--arc-color)", icon: "ARC",
+      tagline: "Builds that focus on arcane magic and numerous ailments.",
+      weapons: {
+        weaponOne: {
+          name: "TODO: weapon name", icon: "TODO",
+          tagline: "TODO: one-line summary for this weapon's card.",
+          build: { overview: "TODO", statSpread: ["TODO: Stat - value"], talismans: ["TODO: talisman name"], notes: null }
+        }
+      }
+    }
+  };
+
+  /* =========================================================
+     STATE
+     Everything the app currently "knows" lives in one object,
+     and is mirrored into localStorage so progress survives a
+     page refresh.
+     ========================================================= */
+  let state = loadState() || {
+    hasStarted: false, // whether the start screen has been dismissed
+    pathId: null,
+    subPathId: null,   // only used when the chosen path has subPaths
+    stepIndex: 0,
+    checkedItems: {},   // e.g. { "overpowered-0-1": true }
+
+    activeTab: "progression",
+    buildsIntroSeen: false,
+    buildStatId: null,
+    buildWeaponId: null,
+  };
+
+  // Resolves whatever the user has picked (a plain path, or a
+  // path + sub-path) down to a single object with .name/.color/.steps.
+  // Every render function below reads from this instead of touching
+  // PATHS directly, so branching depth doesn't need special-casing
+  // everywhere.
+  function getActivePath() {
+    return PATHS[state.pathId];
+  }
+  function getActiveLeaf() {
+    const path = getActivePath();
+    if (!path) return null;
+    if (path.subPaths) return path.subPaths[state.subPathId] || null;
+    return path;
+  }
+  // Unique key namespace for checklist items, since a sub-path's
+  // step 0 shouldn't collide with another sub-path's step 0.
+  function leafKey() {
+    return state.subPathId ? `${state.pathId}-${state.subPathId}` : state.pathId;
+  }
+
+  function saveState() {
+    localStorage.setItem("tarnished-path-state", JSON.stringify(state));
+  }
+  function loadState() {
+    try {
+      const raw = localStorage.getItem("tarnished-path-state");
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
+  }
+
+  /* =========================================================
+     RENDERING
+     Screens: the start screen, the path picker(s), and the
+     step viewer. Which one shows is entirely driven by
+     `state`.
+     ========================================================= */
+  const app = document.getElementById("app");
+
+  function render() {
+    document.getElementById("reset-row").style.display =
+      (state.hasStarted && (state.pathId || state.buildStatId)) ? "flex" : "none";
+    document.getElementById("site-header").style.display = state.hasStarted ? "" : "none";
+    document.getElementById("tab-nav").style.display = state.hasStarted ? "flex" : "none";
+    document.querySelectorAll(".tab-btn").forEach(btn => {
+      btn.classList.toggle("active", btn.dataset.tab === state.activeTab);
+    });
+
+    if (!state.hasStarted) {
+      renderStartScreen();
+      return;
+  }
+
+    if (state.activeTab === "builds") {
+      if (!state.buildsIntroSeen) renderBuildsIntro();
+      else if (!state.buildStatId) renderStatSelect();
+      else if (!state.buildWeaponId) renderWeaponSelect();
+      else renderBuildDetail();
+      return;
+    }
+
+    if (!state.pathId) {
+      renderPathSelect();
+    } else if (getActivePath().subPaths && !state.subPathId) {
+      renderSubPathSelect();
+    } else {
+      renderStep();
+    }
+  }
+
+  function renderStartScreen() {
+    const hasProgress = state.pathId !== null;
+    const continueLabel = hasProgress ? "Continue" : "Begin";
+
+    app.innerHTML = `
+      <div class="start-screen">
+        <div class="start-seal">G</div>
+        <h2>Arise now, ye Tarnished</h2>
+        <p class="lore">
+          Choose one of several roads, each a guide through its own trial.
+        </p>
+        <div class="controls">
+          <button id="start-btn">${continueLabel}</button>
+        </div>
+      </div>
+    `;
+
+    document.getElementById("start-btn").addEventListener("click", () => {
+      state.hasStarted = true;
+      saveState();
+      render();
+    });
+  }
+
+  function renderPathSelect() {
+    const cards = Object.entries(PATHS).map(([id, path]) => `
+      <div class="path-card" style="--accent:${path.color}" data-path="${id}">
+        <div class="icon">${path.icon}</div>
+        <h3>${path.name}</h3>
+        <p>${path.tagline}</p>
+      </div>
+    `).join("");
+
+    app.innerHTML = `<div class="path-grid">${cards}</div>`;
+
+    app.querySelectorAll(".path-card").forEach(card => {
+      card.addEventListener("click", () => {
+        state.pathId = card.dataset.path;
+        state.subPathId = null;
+        state.stepIndex = 0;
+        saveState();
+        render();
+      });
+    });
+  }
+
+  // Shown only for paths that define `subPaths` (Challenge Run).
+  // Re-uses the same .path-grid/.path-card markup as the top-level
+  // selector so the two screens look and behave consistently.
+  function renderSubPathSelect() {
+    const path = getActivePath();
+    const cards = Object.entries(path.subPaths).map(([id, sub]) => `
+      <div class="path-card" style="--accent:${sub.color}" data-subpath="${id}">
+        <div class="icon">${sub.icon}</div>
+        <h3>${sub.name}</h3>
+        <p>${sub.tagline}</p>
+      </div>
+    `).join("");
+
+    app.innerHTML = `
+      <div class="path-label" style="--accent:${path.color}">${path.name}</div>
+      <div class="path-grid">${cards}</div>
+      <div class="controls" style="justify-content:center;">
+        <button class="ghost" id="subpath-back-btn">Choose a different path</button>
+      </div>
+    `;
+
+    app.querySelectorAll(".path-card").forEach(card => {
+      card.addEventListener("click", () => {
+        state.subPathId = card.dataset.subpath;
+        state.stepIndex = 0;
+        saveState();
+        render();
+      });
+    });
+
+    document.getElementById("subpath-back-btn").addEventListener("click", () => {
+      state.pathId = null;
+      saveState();
+      render();
+    });
+  }
+
+  function renderStep() {
+    const leaf = getActiveLeaf();
+    const step = leaf.steps[state.stepIndex];
+    const total = leaf.steps.length;
+    const isLast = state.stepIndex === total - 1;
+    const backLabel = state.stepIndex === 0
+      ? (getActivePath().subPaths ? "Choose a different sub-path" : "Choose a different path")
+      : "Back";
+
+    app.innerHTML = `
+      <div class="path-label" style="--accent:${leaf.color}">${leaf.name} path</div>
+      <div class="trail" style="--accent:${leaf.color}">${renderTrail(leaf, state.stepIndex)}</div>
+
+      <div class="step-card" style="--accent:${leaf.color}">
+        <h2>${step.title}</h2>
+        <p>${step.body}</p>
+
+        ${step.checklist.length ? `
+          <ul class="checklist">
+            ${step.checklist.map((item, i) => {
+              const key = `${leafKey()}-${state.stepIndex}-${i}`;
+              const checked = !!state.checkedItems[key];
+              return `
+                <li class="${checked ? "checked" : ""}">
+                  <input type="checkbox" data-key="${key}" ${checked ? "checked" : ""}>
+                  ${item}
+                </li>`;
+            }).join("")}
+          </ul>
+        ` : ""}
+
+        ${step.tip ? `
+          <details class="tip">
+            <summary>Tarnished's tip</summary>
+            <p>${step.tip}</p>
+          </details>
+        ` : ""}
+      </div>
+
+      <div class="controls">
+        <button class="ghost" id="back-btn">${backLabel}</button>
+        <button id="next-btn">${isLast ? "Finish path" : "Continue"}</button>
+      </div>
+    `;
+
+    document.getElementById("back-btn").addEventListener("click", () => {
+      if (state.stepIndex === 0) {
+        // Step back out one level: to sub-path select if this path
+        // branches, otherwise all the way to the top-level selector.
+        if (getActivePath().subPaths) {
+          state.subPathId = null;
+        } else {
+          state.pathId = null;
+        }
+      } else {
+        state.stepIndex -= 1;
+      }
+      saveState();
+      render();
+    });
+
+    document.getElementById("next-btn").addEventListener("click", () => {
+      if (isLast) {
+        renderEnd(leaf);
+        return;
+      }
+      state.stepIndex += 1;
+      saveState();
+      render();
+    });
+
+    app.querySelectorAll(".checklist input").forEach(box => {
+      box.addEventListener("change", () => {
+        state.checkedItems[box.dataset.key] = box.checked;
+        saveState();
+        box.closest("li").classList.toggle("checked", box.checked);
+      });
+    });
+  }
+
+  function renderTrail(leaf, currentIndex) {
+    let html = "";
+    leaf.steps.forEach((_, i) => {
+      const isDone = i < currentIndex;
+      const isCurrent = i === currentIndex;
+      html += `<div class="marker ${isDone ? "done" : ""} ${isCurrent ? "current" : ""}"></div>`;
+      if (i < leaf.steps.length - 1) {
+        html += `<div class="line ${i < currentIndex ? "done" : ""}"></div>`;
+      }
+    });
+    return html;
+  }
+
+  function renderEnd(leaf) {
+    const target = state.subPathId
+      ? `PATHS.${state.pathId}.subPaths.${state.subPathId}.steps`
+      : `PATHS.${state.pathId}.steps`;
+    app.innerHTML = `
+      <div class="end-message" style="--accent:${leaf.color}">
+        <h2>Path complete</h2>
+        <p>You've reached the end of the ${leaf.name} route — for now. Add more steps to ${target} to keep going.</p>
+        <div class="controls" style="justify-content:center; margin-top:1.5rem;">
+          <button id="restart-btn">Try another path</button>
+        </div>
+      </div>
+    `;
+    document.getElementById("restart-btn").addEventListener("click", () => {
+      state.pathId = null;
+      state.subPathId = null;
+      state.stepIndex = 0;
+      saveState();
+      render();
+    });
+  }
+
+  function renderBuildsIntro() {
+    app.innerHTML = `
+      <div class="start-screen">
+        <div class="start-seal">B</div>
+        <h2>Become the Elden Lord</h2>
+        <p class="lore">Forge your path through the weapons, stats, and powers that define your Tarnished.</p>
+        <div class="controls"><button id="builds-begin-btn">Begin</button></div>
+      </div>
+    `;
+    document.getElementById("builds-begin-btn").addEventListener("click", () => {
+      state.buildsIntroSeen = true;
+      saveState();
+      render();
+    });
+  }
+
+  function renderStatSelect() {
+    const cards = Object.entries(BUILDS).map(([id, stat]) => `
+      <div class="path-card" style="--accent:${stat.color}" data-stat="${id}">
+        <div class="icon">${stat.icon}</div>
+        <h3>${stat.name}</h3>
+        <p>${stat.tagline}</p>
+      </div>
+    `).join("");
+    app.innerHTML = `<div class="path-grid">${cards}</div>`;
+    app.querySelectorAll(".path-card").forEach(card => {
+      card.addEventListener("click", () => {
+        state.buildStatId = card.dataset.stat;
+        state.buildWeaponId = null;
+        saveState();
+        render();
+      });
+    });
+  }
+
+  function renderWeaponSelect() {
+    const stat = BUILDS[state.buildStatId];
+    const cards = Object.entries(stat.weapons).map(([id, weapon]) => `
+      <div class="path-card" style="--accent:${stat.color}" data-weapon="${id}">
+        <div class="icon">${weapon.icon}</div>
+        <h3>${weapon.name}</h3>
+        <p>${weapon.tagline}</p>
+      </div>
+    `).join("");
+    app.innerHTML = `
+      <div class="path-label" style="--accent:${stat.color}">${stat.name}</div>
+      <div class="path-grid">${cards}</div>
+      <div class="controls" style="justify-content:center;">
+        <button class="ghost" id="weapon-back-btn">Choose a different stat</button>
+      </div>
+    `;
+    app.querySelectorAll(".path-card").forEach(card => {
+      card.addEventListener("click", () => {
+        state.buildWeaponId = card.dataset.weapon;
+        saveState();
+        render();
+      });
+    });
+    document.getElementById("weapon-back-btn").addEventListener("click", () => {
+      state.buildStatId = null;
+      saveState();
+      render();
+    });
+  }
+
+  function renderBuildDetail() {
+    const stat = BUILDS[state.buildStatId];
+    const weapon = stat.weapons[state.buildWeaponId];
+    const build = weapon.build;
+    app.innerHTML = `
+      <div class="path-label" style="--accent:${stat.color}">${stat.name} — ${weapon.name}</div>
+      <div class="step-card" style="--accent:${stat.color}">
+        <h2>${weapon.name}</h2>
+        <p>${build.overview}</p>
+        ${build.statSpread.length ? `<ul class="checklist">${build.statSpread.map(line => `<li>${line}</li>`).join("")}</ul>` : ""}
+        ${build.talismans.length ? `<details class="tip" open><summary>Recommended talismans</summary><p>${build.talismans.join(", ")}</p></details>` : ""}
+        ${build.notes ? `<details class="tip"><summary>Notes</summary><p>${build.notes}</p></details>` : ""}
+      </div>
+      <div class="controls">
+        <button class="ghost" id="build-back-btn">Choose a different weapon</button>
+      </div>
+    `;
+    document.getElementById("build-back-btn").addEventListener("click", () => {
+      state.buildWeaponId = null;
+      saveState();
+      render();
+    });
+  }
+
+    document.querySelectorAll(".tab-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        state.activeTab = btn.dataset.tab;
+        saveState();
+        render();
+      });
+    });
+
+    document.getElementById("reset-btn").addEventListener("click", () => {
+    state = {
+      hasStarted: false, activeTab: "progression", buildsIntroSeen: false,
+      pathId: null, subPathId: null, stepIndex: 0,
+      buildStatId: null, buildWeaponId: null, checkedItems: {}
+    };
+    saveState();
+    render();
+  });
+
+  render();
+
+</script>
+</body>
+</html>
