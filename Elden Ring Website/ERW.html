@@ -31,6 +31,16 @@
     --int-color: #5a6bb8;
     --faith-color: #b89550;
     --arc-color: #7a4a8a;
+
+    /* boss regions */
+    --limgrave-color: #6a8f4e;
+    --liurnia-color: #4a7ba0;
+    --caelid-color: #a13a3a;
+    --altus-color: #b8963f;
+    --mountaintops-color: #7fa8c9;
+    --siofra-color: #5a4a7a;
+    --ainsel-color: #3a6a52;
+    --deeproot-color: #4a3a5a;
   }
 
   * { box-sizing: border-box; }
@@ -67,7 +77,7 @@
   position: fixed;
   inset: 0;
   z-index: -1;
-  background: rgba(0, 0, 0, 0.75);   /* adjust 0.6 to taste */
+  background: rgba(0, 0, 0, 0.8);
   }
 
   .bg-slide:nth-child(1) { animation-delay: 0s; }
@@ -132,6 +142,37 @@
     animation: grace-glow 2.2s ease-in-out infinite;
   }
 
+  @keyframes grace-glow {
+    0%, 100% {
+      filter: brightness(1);
+    }
+
+    50% {
+      filter: brightness(1.25);
+      box-shadow:
+        0 0 20px rgba(232, 201, 126, 1),
+        0 0 50px rgba(201, 169, 97, 0.75),
+        0 0 90px rgba(201, 169, 97, 0.4),
+        inset 0 0 24px rgba(201, 169, 97, 0.35);
+    }
+  }
+
+  .tab-btn.active::after {
+    content: "";
+    position: absolute;
+    inset: -8px;
+    z-index: -1;
+    border-radius: inherit;
+    background: rgba(201, 169, 97, 0.3);
+    filter: blur(14px);
+    animation: aura-pulse 2.2s ease-in-out infinite;
+  }
+
+  @keyframes aura-pulse {
+    0%, 100% { opacity: 0.35; transform: scale(0.95); }
+    50% { opacity: 0.9; transform: scale(1.08); }
+  }
+
   /* ---------- build stage tabs ---------- */
 .stage-tabs {
   display: flex;
@@ -179,7 +220,7 @@
   .stat-summary li span:first-child { color: var(--text-muted); }
   .stat-summary li span:last-child { color: var(--gold-bright); font-weight: 600; }
 
-  /* ---------- weapon / talisman image grid ---------- */
+  /* ---------- weapon / talisman / boss image grid ---------- */
   .item-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
@@ -206,35 +247,36 @@
     font-size: 0.85rem;
     color: var(--text-muted);
   }
-
-
-  @keyframes grace-glow {
-    0%, 100% {
-      filter: brightness(1);
-    }
-
-    50% {
-      filter: brightness(1.25);
-      box-shadow:
-        0 0 20px rgba(232, 201, 126, 1),
-        0 0 50px rgba(201, 169, 97, 0.75),
-        0 0 90px rgba(201, 169, 97, 0.4),
-        inset 0 0 24px rgba(201, 169, 97, 0.35);
-    }
+  .item-card .boss-tip {
+    margin-top: 0.3rem;
+    font-size: 0.8rem;
+    font-style: italic;
+    color: var(--text-muted);
   }
 
-  .tab-btn.active {
-    position: relative;
+  /* ---------- remembrance spoiler ---------- */
+  .stage-tab.spoiler-tab {
+    color: var(--deathless-color);
+    border-color: var(--deathless-color);
+  }
+  .stage-tab.spoiler-tab:hover { background: rgba(107, 31, 31, 0.15); }
+  .stage-tab.spoiler-tab.active {
     color: var(--gold-bright);
-    border-color: var(--gold);
-    background: var(--surface);
-    box-shadow:
-      0 0 14px rgba(232, 201, 126, 0.8),
-      0 0 38px rgba(201, 169, 97, 0.55),
-      0 0 70px rgba(201, 169, 97, 0.25),
-      inset 0 0 18px rgba(201, 169, 97, 0.25);
-    animation: grace-glow 2.2s ease-in-out infinite;
+    background: var(--deathless-color);
+    border-color: var(--deathless-color);
   }
+  .spoiler-tabs {
+    display: flex;
+    justify-content: center;
+    margin: 0 0 1.5rem;
+  }
+  .spoiler-card { border-left-color: var(--deathless-color); }
+  .spoiler-warning {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin: 0 0 1rem;
+  }
+
 
   @keyframes grace-glow {
     0%, 100% {
@@ -249,21 +291,6 @@
         0 0 90px rgba(201, 169, 97, 0.4),
         inset 0 0 24px rgba(201, 169, 97, 0.35);
     }
-  }
-  .tab-btn.active::after {
-    content: "";
-    position: absolute;
-    inset: -8px;
-    z-index: -1;
-    border-radius: inherit;
-    background: rgba(201, 169, 97, 0.3);
-    filter: blur(14px);
-    animation: aura-pulse 2.2s ease-in-out infinite;
-  }
-
-  @keyframes aura-pulse {
-    0%, 100% { opacity: 0.35; transform: scale(0.95); }
-    50% { opacity: 0.9; transform: scale(1.08); }
   }
 
   /* ---------- start screen ---------- */
@@ -527,6 +554,7 @@
   <nav class="tab-nav" id="tab-nav">
   <button class="tab-btn" data-tab="progression">Progression</button>
   <button class="tab-btn" data-tab="builds">Builds</button>
+  <button class="tab-btn" data-tab="bosses">Bosses</button>
   </nav>
 
   <div id="app"></div>
@@ -1107,13 +1135,17 @@
         late: {
           label: "Late Game",
           stats: [
-            { stat: "Vigor", value: 0 }, { stat: "Mind", value: 0 }, { stat: "Endurance", value: 0 }, { stat: "Strength", value: 0 }, { stat: "Dexterity", value: 0 }, { stat: "Intelligence", value: 0 }, { stat: "Faith", value: 0 }, { stat: "Arcane", value: 0 }
+            { stat: "Vigor", value: 67 }, { stat: "Mind", value: 69 }, { stat: "Endurance", value: 420 }, { stat: "Strength", value: 666 }, { stat: "Dexterity", value: 80085 }, { stat: "Intelligence", value: 0 }, { stat: "Faith", value: 9000 }, { stat: "Arcane", value: 0 }
           ],
           weapons: [
-            { name: "TODO: weapon name", img: "images/TODO.avif" }
+            { name: "Diamond Sword", img: "images/diamondsword.webp" },
+            { name: "BFG 9000", img: "images/bfg9000.webp" },
+            { name: "Poké Ball", img: "images/pokeball.webp" }
           ],
           talismans: [
-            { name: "TODO: talisman name", img: "images/TODO.avif" }
+            { name: "Calamity Ring", img: "images/calamityring.avif" },
+            { name: "Illusory Ring of the Guilty", img: "images/guiltyring.avif" },
+            { name: "Reversal Ring", img: "images/reversalring.avif" }
           ]
         }
       }
@@ -1144,6 +1176,217 @@
   Object.assign(BUILDS, HYBRID_BUILDS);
 
   /* =========================================================
+     BOSSES — sorted by region first, then by category within
+     that region (Cave Bosses, then Catacomb Bosses, then Open
+     World Bosses, in that fixed order). All entries are TODO
+     placeholders for now — fill in name/img/tips per boss.
+
+     REGION shape:
+       key: {
+         name:     "Display name",
+         color:    "var(--some-region-color)",
+         icon:     "Short fallback label",
+         iconImg:  "Optional image path for the region card",
+         tagline:  "One line shown on the region selector card",
+         categories: {
+           caves:      [ BOSS, BOSS, ... ],
+           catacombs:  [ BOSS, BOSS, ... ],
+           openWorld:  [ BOSS, BOSS, ... ]
+         }
+       }
+
+     BOSS shape:
+       { name: "Boss name", img: "images/path.avif", tips: "Strategy/tips text." }
+     ========================================================= */
+  const BOSSES = {
+
+    limgrave: {
+      name: "Limgrave",
+      color: "var(--limgrave-color)",
+      icon: "LG",
+      iconImg: "images/sog.png",
+      tagline: "TODO: region tagline.",
+      remembrance: [
+        { name: "TODO: remembrance boss name", img: "images/TODO.avif", tips: "TODO: describe strategy/tips for this boss." }
+      ],
+      categories: {
+        openWorld: [
+          { name: "TODO: boss name", img: "images/TODO.avif", tips: "TODO: describe strategy/tips for this boss." }
+        ],
+        catacombs: [
+          { name: "TODO: boss name", img: "images/TODO.avif", tips: "TODO: describe strategy/tips for this boss." }
+        ],
+        caves: [
+          { name: "TODO: boss name", img: "images/TODO.avif", tips: "TODO: describe strategy/tips for this boss." }
+        ]
+      }
+    },
+
+    liurnia: {
+      name: "Liurnia of the Lakes",
+      color: "var(--liurnia-color)",
+      icon: "LL",
+      iconImg: "images/revenant.png",
+      tagline: "TODO: region tagline.",
+      remembrance: [
+        { name: "TODO: remembrance boss name", img: "images/TODO.avif", tips: "TODO: describe strategy/tips for this boss." }
+      ],
+      categories: {
+        openWorld: [
+          { name: "TODO: boss name", img: "images/TODO.avif", tips: "TODO: describe strategy/tips for this boss." }
+        ],
+        catacombs: [
+          { name: "TODO: boss name", img: "images/TODO.avif", tips: "TODO: describe strategy/tips for this boss." }
+        ],
+        caves: [
+          { name: "TODO: boss name", img: "images/TODO.avif", tips: "TODO: describe strategy/tips for this boss." }
+        ]
+      }
+    },
+
+    caelid: {
+      name: "Caelid",
+      color: "var(--caelid-color)",
+      icon: "CL",
+      iconImg: "images/ekzykes.png",
+      tagline: "TODO: region tagline.",
+      remembrance: [
+        { name: "TODO: remembrance boss name", img: "images/TODO.avif", tips: "TODO: describe strategy/tips for this boss." }
+      ],
+      categories: {
+        openWorld: [
+          { name: "TODO: boss name", img: "images/TODO.avif", tips: "TODO: describe strategy/tips for this boss." }
+        ],
+        catacombs: [
+          { name: "TODO: boss name", img: "images/TODO.avif", tips: "TODO: describe strategy/tips for this boss." }
+        ],
+        caves: [
+          { name: "TODO: boss name", img: "images/TODO.avif", tips: "TODO: describe strategy/tips for this boss." }
+        ]
+      }
+    },
+
+    altus: {
+      name: "Altus Plateau",
+      color: "var(--altus-color)",
+      icon: "AP",
+      iconImg: "images/wormface.png",
+      tagline: "TODO: region tagline.",
+      remembrance: [
+        { name: "TODO: remembrance boss name", img: "images/TODO.avif", tips: "TODO: describe strategy/tips for this boss." }
+      ],
+      categories: {
+        openWorld: [
+          { name: "TODO: boss name", img: "images/TODO.avif", tips: "TODO: describe strategy/tips for this boss." }
+        ],
+        catacombs: [
+          { name: "TODO: boss name", img: "images/TODO.avif", tips: "TODO: describe strategy/tips for this boss." }
+        ],
+        caves: [
+          { name: "TODO: boss name", img: "images/TODO.avif", tips: "TODO: describe strategy/tips for this boss." }
+        ]
+      }
+    },
+
+    mountaintops: {
+      name: "Mountaintops of the Giants",
+      color: "var(--mountaintops-color)",
+      icon: "MT",
+      iconImg: "images/putrid.png",
+      tagline: "TODO: region tagline.",
+      remembrance: [
+        { name: "TODO: remembrance boss name", img: "images/TODO.avif", tips: "TODO: describe strategy/tips for this boss." }
+      ],
+      categories: {
+        openWorld: [
+          { name: "TODO: boss name", img: "images/TODO.avif", tips: "TODO: describe strategy/tips for this boss." }
+        ],
+        catacombs: [
+          { name: "TODO: boss name", img: "images/TODO.avif", tips: "TODO: describe strategy/tips for this boss." }
+        ],
+        caves: [
+          { name: "TODO: boss name", img: "images/TODO.avif", tips: "TODO: describe strategy/tips for this boss." }
+        ]
+      }
+    },
+
+    siofra: {
+      name: "Siofra River",
+      color: "var(--siofra-color)",
+      icon: "SR",
+      iconImg: "images/dragonkin.png",
+      tagline: "TODO: region tagline.",
+      remembrance: [
+        { name: "TODO: remembrance boss name", img: "images/TODO.avif", tips: "TODO: describe strategy/tips for this boss." }
+      ],
+      categories: {
+        openWorld: [
+          { name: "TODO: boss name", img: "images/TODO.avif", tips: "TODO: describe strategy/tips for this boss." }
+        ],
+        catacombs: [
+          { name: "TODO: boss name", img: "images/TODO.avif", tips: "TODO: describe strategy/tips for this boss." }
+        ],
+        caves: [
+          { name: "TODO: boss name", img: "images/TODO.avif", tips: "TODO: describe strategy/tips for this boss." }
+        ]
+      }
+    },
+
+    ainsel: {
+      name: "Ainsel River",
+      color: "var(--ainsel-color)",
+      icon: "AR",
+      iconImg: "images/baleful.png",
+      tagline: "TODO: region tagline.",
+      remembrance: [
+        { name: "TODO: remembrance boss name", img: "images/TODO.avif", tips: "TODO: describe strategy/tips for this boss." }
+      ],
+      categories: {
+        openWorld: [
+          { name: "TODO: boss name", img: "images/TODO.avif", tips: "TODO: describe strategy/tips for this boss." }
+        ],
+        catacombs: [
+          { name: "TODO: boss name", img: "images/TODO.avif", tips: "TODO: describe strategy/tips for this boss." }
+        ],
+        caves: [
+          { name: "TODO: boss name", img: "images/TODO.avif", tips: "TODO: describe strategy/tips for this boss." }
+        ]
+      }
+    },
+
+    deeproot: {
+      name: "Deeproot Depths",
+      color: "var(--deeproot-color)",
+      icon: "DD",
+      iconImg: "images/champion.png",
+      tagline: "TODO: region tagline.",
+      remembrance: [
+        { name: "TODO: remembrance boss name", img: "images/TODO.avif", tips: "TODO: describe strategy/tips for this boss." }
+      ],
+      categories: {
+        openWorld: [
+          { name: "TODO: boss name", img: "images/TODO.avif", tips: "TODO: describe strategy/tips for this boss." }
+        ],
+        catacombs: [
+          { name: "TODO: boss name", img: "images/TODO.avif", tips: "TODO: describe strategy/tips for this boss." }
+        ],
+        caves: [
+          { name: "TODO: boss name", img: "images/TODO.avif", tips: "TODO: describe strategy/tips for this boss." }
+        ]
+      }
+    }
+
+  };
+
+  // Fixed display order for boss categories within a region.
+  const BOSS_CATEGORY_ORDER = [
+    { key: "openWorld", label: "Open World Bosses" },
+    { key: "catacombs", label: "Catacomb Bosses" },
+    { key: "caves", label: "Cave Bosses" },
+  
+  ];
+
+  /* =========================================================
      STATE
      Everything the app currently "knows" lives in one object,
      and is mirrored into localStorage so progress survives a
@@ -1159,10 +1402,12 @@
     buildsIntroSeen: false,
     buildStatId: null,
     buildStageId: null,
+    bossRegionId: null,
+    bossSpoilerRevealed: {},
     ...loadState(),
   };
 
-  if (!["progression", "builds"].includes(state.activeTab)) {
+  if (!["progression", "builds", "bosses"].includes(state.activeTab)) {
     state.activeTab = "progression";
   }
 
@@ -1216,7 +1461,7 @@
 
   function renderScreen() {
     document.getElementById("reset-row").style.display =
-      (state.hasStarted && (state.pathId || state.buildStatId)) ? "flex" : "none";
+      (state.hasStarted && (state.pathId || state.buildStatId || state.bossRegionId)) ? "flex" : "none";
     document.getElementById("site-header").style.display = state.hasStarted ? "" : "none";
     document.getElementById("tab-nav").style.display = state.hasStarted ? "flex" : "none";
     document.querySelectorAll(".tab-btn").forEach(btn => {
@@ -1231,6 +1476,12 @@
     if (state.activeTab === "builds") {
       if (!state.buildStatId) renderStatSelect();
       else renderStatDetail();
+      return;
+    }
+
+    if (state.activeTab === "bosses") {
+      if (!state.bossRegionId) renderBossRegionSelect();
+      else renderBossDetail();
       return;
     }
 
@@ -1539,6 +1790,123 @@
     });
   }
 
+  // Top-level region picker for the Bosses tab. Same card-grid
+  // pattern as the path/stat selectors above.
+  function renderBossRegionSelect() {
+    const cards = Object.entries(BOSSES).map(([id, region]) => `
+      <div class="path-card" style="--accent:${region.color}" data-region="${id}">
+        <div class="icon">${iconHTML(region)}</div>
+        <h3>${region.name}</h3>
+        <p>${region.tagline}</p>
+      </div>
+    `).join("");
+
+    app.innerHTML = `<div class="path-grid">${cards}</div>`;
+
+    app.querySelectorAll(".path-card").forEach(card => {
+      card.addEventListener("click", () => {
+        state.bossRegionId = card.dataset.region;
+        saveState();
+        render();
+      });
+    });
+  }
+
+  // Detail screen for a chosen region: region is one big tab bar
+  // (so you can hop between regions without going back), and below
+  // it the bosses are shown in three fixed sections, in order —
+  // Cave Bosses, then Catacomb Bosses, then Open World Bosses.
+  function renderBossDetail() {
+    const region = BOSSES[state.bossRegionId];
+
+    const tabButtons = Object.entries(BOSSES).map(([id, r]) => `
+      <button class="stage-tab${id === state.bossRegionId ? " active" : ""}" data-region="${id}" style="--accent:${r.color}">
+        ${r.name}
+      </button>
+    `).join("");
+
+    // Spoiler tab: sits at the end of the same tab row as the region
+    // buttons, but instead of switching region it toggles a hidden
+    // "Remembrance Boss" card open. Reveal state is per-region and
+    // persists in state.bossSpoilerRevealed.
+    const revealed = !!(state.bossSpoilerRevealed && state.bossSpoilerRevealed[state.bossRegionId]);
+    const spoilerTabButton = `
+      <button class="stage-tab spoiler-tab${revealed ? " active" : ""}" id="spoiler-tab-btn">
+        ${revealed ? "Hide" : "Reveal"} Remembrance Boss
+      </button>
+    `;
+
+    const remembranceBosses = region.remembrance || [];
+    const spoilerSection = revealed ? `
+      <div class="step-card spoiler-card" style="--accent:${region.color}">
+        <h2>Remembrance Boss${remembranceBosses.length > 1 ? "es" : ""}</h2>
+        <div class="item-grid">
+          ${remembranceBosses.map(b => `
+            <div class="item-card">
+              <div class="item-img"><img src="${b.img}" alt="${b.name}"></div>
+              <p>${b.name}</p>
+              ${b.tips ? `<p class="boss-tip">${b.tips}</p>` : ""}
+            </div>
+          `).join("") || "<p>TODO: add remembrance boss(es) for this region.</p>"}
+        </div>
+      </div>
+    ` : "";
+
+    const sections = BOSS_CATEGORY_ORDER.map(cat => {
+      const bosses = (region.categories && region.categories[cat.key]) || [];
+      const cards = bosses.map(b => `
+        <div class="item-card">
+          <div class="item-img"><img src="${b.img}" alt="${b.name}"></div>
+          <p>${b.name}</p>
+          ${b.tips ? `<p class="boss-tip">${b.tips}</p>` : ""}
+        </div>
+      `).join("");
+
+      return `
+        <div class="step-card" style="--accent:${region.color}">
+          <h2>${cat.label}</h2>
+          <div class="item-grid">${cards || "<p>TODO: add bosses for this category.</p>"}</div>
+        </div>
+      `;
+    }).join("");
+
+    app.innerHTML = `
+      <div class="path-label" style="--accent:${region.color}">${region.name}</div>
+
+      <div class="stage-tabs">${tabButtons}</div>
+
+      <div class="spoiler-tabs">${spoilerTabButton}</div>
+
+      ${spoilerSection}
+
+      ${sections}
+
+      <div class="controls" style="justify-content:center;">
+        <button class="ghost" id="boss-back-btn">Choose a different region</button>
+      </div>
+    `;
+
+    app.querySelectorAll(".stage-tab[data-region]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        state.bossRegionId = btn.dataset.region;
+        saveState();
+        render();
+      });
+    });
+
+    document.getElementById("spoiler-tab-btn").addEventListener("click", () => {
+      state.bossSpoilerRevealed[state.bossRegionId] = !revealed;
+      saveState();
+      render();
+    });
+
+    document.getElementById("boss-back-btn").addEventListener("click", () => {
+      state.bossRegionId = null;
+      saveState();
+      render();
+    });
+  }
+
 
   function iconHTML(entry) {
     if (!entry.iconImg) return entry.icon;
@@ -1560,6 +1928,9 @@
         state.buildStatId = null;
         state.buildStageId = null;
       }
+      if (tab === "bosses") {
+        state.bossRegionId = null;
+      }
       saveState();
       render();
     });
@@ -1569,7 +1940,8 @@
     state = {
       hasStarted: false, activeTab: "progression",
       pathId: null, subPathId: null, stepIndex: 0,
-      buildStatId: null, buildStageId: null, checkedItems: {}
+      buildStatId: null, buildStageId: null,
+      bossRegionId: null, checkedItems: {}
     };
     saveState();
     render();
